@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MassTransit" Version="8.2.5" />
+      <PackageReference Include="MassTransit.AmazonSQS" Version="8.2.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Bmb.Production.Bus.Test" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bmb.Production.Core\Bmb.Production.Core.csproj" />
+    </ItemGroup>
+</Project>
