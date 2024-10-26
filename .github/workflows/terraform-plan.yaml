@@ -2,6 +2,8 @@ name: "Terraform Plan"
 
 on:
   pull_request:
+    paths:
+      - 'terraform/**'
 
 env:
   TF_CLOUD_ORGANIZATION: "${{ vars.BMB_TF_ORGANIZATION }}"
