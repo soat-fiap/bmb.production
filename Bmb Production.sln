@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE2AA116-61E9-45EE-ADF4-B06D822F0745}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{C3999042-1B15-49D2-9EF0-DEDF1EE85CA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{80A546F5-91CE-48BF-BF24-94061A3F7D3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{184537D1-4F8D-4E00-8825-452E6E41754C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{728E35F4-8429-4800-B360-82440F519C49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3999042-1B15-49D2-9EF0-DEDF1EE85CA6} = {AE2AA116-61E9-45EE-ADF4-B06D822F0745}
+		{80A546F5-91CE-48BF-BF24-94061A3F7D3A} = {AE2AA116-61E9-45EE-ADF4-B06D822F0745}
+		{184537D1-4F8D-4E00-8825-452E6E41754C} = {AE2AA116-61E9-45EE-ADF4-B06D822F0745}
+	EndGlobalSection
+EndGlobal
