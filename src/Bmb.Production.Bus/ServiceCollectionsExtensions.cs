@@ -10,7 +10,7 @@ namespace Bmb.Production.Bus;
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
-    public static void AddPaymentBus(this IServiceCollection services)
+    public static void AddBus(this IServiceCollection services)
     {
         services.AddMassTransit(bus =>
         {

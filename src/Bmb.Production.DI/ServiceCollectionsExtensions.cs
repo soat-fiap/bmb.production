@@ -1,4 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Bmb.Production.Application;
+using Bmb.Production.Bus;
+using Bmb.Production.Controllers;
+using Bmb.Production.Redis.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,13 +13,11 @@ public static class ServiceCollectionsExtensions
 {
     public static void IoCSetup(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        // serviceCollection.ConfigurePersistenceApp(configuration);
-        // serviceCollection.AddUseCases();
-        // serviceCollection.AddControllers();
-        // serviceCollection.AddOrdersGateway(configuration);
-        // serviceCollection.AddDynamoDbConnection(configuration);
+        serviceCollection.AddBus();
+        serviceCollection.AddControllers();
+        serviceCollection.AddDatabase(configuration);
+        serviceCollection.AddUseCases();
     }
-
 
     public static void ConfigureHealthCheck(this IServiceCollection services)
     {
