@@ -5,12 +5,34 @@ using Microsoft.Extensions.Logging;
 
 namespace Bmb.Production.Bus;
 
-public class OrderCreatedConsumer(ILogger<OrderCreatedConsumer> logger,  IKitchenQueueGateway kitchenQueueGateway)
+public class OrderCreatedConsumer(ILogger<OrderCreatedConsumer> logger, IKitchenOrderRepository kitchenOrderRepository)
     : IConsumer<OrderCreated>
 {
     public async Task Consume(ConsumeContext<OrderCreated> context)
     {
-        logger.LogInformation("Message processed: {Message}", context.Message);
-        await kitchenQueueGateway.SaveAsync(context.Message.ToDto());
+        try
+        {
+            var message = context.Message;
+
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message), "Order created message cannot be null");
+            }
+
+            logger.LogInformation("Processing order {OrderId}", message.Id);
+
+            await kitchenOrderRepository.SaveAsync(
+                message.ToDto(),
+                context.CancellationToken);
+
+            logger.LogInformation(
+                "Successfully processed order {OrderId}",
+                message.Id);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to process order created message: {ErrorMessage}", ex.Message);
+            throw;
+        }
     }
 }
