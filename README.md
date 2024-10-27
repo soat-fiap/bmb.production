@@ -44,3 +44,32 @@ Repository with Kitchen production line resources
     - If the order status is `Completed`, it should be removed from the orders list.
 - **Events**:
     - An `OrderStatusUpdated` event should be triggered on every status change operation.
+
+# Use Cases
+
+## ReceiveOrderUseCase
+- **Trigger**: Executed from the `OrderPaymentConfirmed` event.
+- **Actions**:
+  - Adds the order to the `Received` queue.
+  - Publishes an `OrderStatusUpdated` event with the status value `Received`.
+
+## PrepareOrderUseCase
+- **Trigger**: Executed when an order needs to be prepared.
+- **Actions**:
+  - Removes the order from the `Received` queue.
+  - Adds the order to the `InPreparation` queue.
+  - Publishes an `OrderStatusUpdated` event with the status value `InPreparation`.
+
+## FinishOrderPreparationUseCase
+- **Trigger**: Executed when an order preparation is finished.
+- **Actions**:
+  - Removes the order from the `InPreparation` queue.
+  - Adds the order to the `Ready` queue.
+  - Publishes an `OrderStatusUpdated` event with the status value `Ready`.
+
+## CompleteOrderUseCase
+- **Trigger**: Executed when an order is completed.
+- **Actions**:
+  - Removes the order from the `Ready` queue.
+  - Removes the order from the list.
+  - Publishes an `OrderStatusUpdated` event with the status value `Completed`.

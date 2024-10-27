@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Bmb.Production.Bus.Consumers;
 using Bmb.Production.Core.Contracts;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ public static class ServiceCollectionsExtensions
         services.AddMassTransit(bus =>
         {
             bus.AddConsumer<OrderCreatedConsumer>();
+            bus.AddConsumer<OrderPaymentConfirmedConsumer>();
             bus.UsingAmazonSqs((context, cfg) =>
             {
                 cfg.Host("us-east-1", _ => { });

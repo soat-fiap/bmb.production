@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Bmb.Production.Application\Bmb.Production.Application.csproj" />
       <ProjectReference Include="..\Bmb.Production.Core\Bmb.Production.Core.csproj" />
     </ItemGroup>
 </Project>
