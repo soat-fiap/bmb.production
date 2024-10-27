@@ -16,4 +16,10 @@
       <Folder Include="HealthChecks\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Bmb.Production.Bus\Bmb.Production.Bus.csproj" />
+      <ProjectReference Include="..\Bmb.Production.Controllers\Bmb.Production.Controllers.csproj" />
+      <ProjectReference Include="..\Bmb.Production.Redis.Repository\Bmb.Production.Redis.Repository.csproj" />
+    </ItemGroup>
+
 </Project>

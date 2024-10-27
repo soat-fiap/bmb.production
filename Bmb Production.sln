@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Api", "src\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Application", "src\Bmb.Production.Application\Bmb.Production.Application.csproj", "{C0C4F71F-5A27-42EE-A870-718583A8DEC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Redis.Gateway", "src\Bmb.Production.Redis.Gateway\Bmb.Production.Redis.Gateway.csproj", "{6072BB21-6F27-4FED-9202-C224906CD353}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Redis.Repository", "src\Bmb.Production.Redis.Repository\Bmb.Production.Redis.Repository.csproj", "{6072BB21-6F27-4FED-9202-C224906CD353}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Bus", "src\Bmb.Production.Bus\Bmb.Production.Bus.csproj", "{2A874712-89EA-4CA4-A81A-99AF1302AC26}"
 EndProject
