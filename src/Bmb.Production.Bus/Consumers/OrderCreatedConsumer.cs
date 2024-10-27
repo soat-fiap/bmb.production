@@ -1,27 +1,22 @@
 using Bmb.Domain.Core.Events.Integration;
-using Bmb.Production.Core.Contracts;
+using Bmb.Production.Application.UseCases;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Bmb.Production.Bus;
+namespace Bmb.Production.Bus.Consumers;
 
-public class OrderCreatedConsumer(ILogger<OrderCreatedConsumer> logger, IKitchenOrderRepository kitchenOrderRepository)
+public class OrderCreatedConsumer(ILogger<OrderCreatedConsumer> logger, IReplicateOrderUseCase replicateOrderUseCase)
     : IConsumer<OrderCreated>
 {
     public async Task Consume(ConsumeContext<OrderCreated> context)
     {
         try
         {
-            var message = context.Message;
-
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message), "Order created message cannot be null");
-            }
+            var message = context.GetValidIntegrationMessage();
 
             logger.LogInformation("Processing order {OrderId}", message.Id);
 
-            await kitchenOrderRepository.SaveAsync(
+            await replicateOrderUseCase.ExecuteAsync(
                 message.ToDto(),
                 context.CancellationToken);
 
