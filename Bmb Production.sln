@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Api", "src\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Application", "src\Bmb.Production.Application\Bmb.Production.Application.csproj", "{C0C4F71F-5A27-42EE-A870-718583A8DEC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Redis.Repository", "src\Bmb.Production.Redis.Repository\Bmb.Production.Redis.Repository.csproj", "{6072BB21-6F27-4FED-9202-C224906CD353}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Redis", "src\Bmb.Production.Redis\Bmb.Production.Redis.csproj", "{6072BB21-6F27-4FED-9202-C224906CD353}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Bus", "src\Bmb.Production.Bus\Bmb.Production.Bus.csproj", "{2A874712-89EA-4CA4-A81A-99AF1302AC26}"
 EndProject
@@ -31,6 +31,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Application.Test", "tests\Bmb.Production.Application.Test\Bmb.Production.Application.Test.csproj", "{56ED07DA-E8CE-4DD3-BECA-37DBC0927821}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Api.Test", "tests\Bmb.Production.Api.Test\Bmb.Production.Api.Test.csproj", "{0C260DE3-992C-4DCB-9C3C-3EEF57B55589}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Production.Redis.Test", "tests\Bmb.Production.Redis.Test\Bmb.Production.Redis.Test.csproj", "{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Test.Common", "tests\Bmb.Test.Common\Bmb.Test.Common.csproj", "{64A359E0-FF1B-4D2C-9D6D-A974632E56B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +56,8 @@ Global
 		{56ED07DA-E8CE-4DD3-BECA-37DBC0927821} = {728E35F4-8429-4800-B360-82440F519C49}
 		{D33BDFBC-4A19-40CD-8CCE-0B393CFDC5BB} = {AE2AA116-61E9-45EE-ADF4-B06D822F0745}
 		{0C260DE3-992C-4DCB-9C3C-3EEF57B55589} = {728E35F4-8429-4800-B360-82440F519C49}
+		{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E} = {728E35F4-8429-4800-B360-82440F519C49}
+		{64A359E0-FF1B-4D2C-9D6D-A974632E56B5} = {728E35F4-8429-4800-B360-82440F519C49}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8578C641-4D21-43E5-A544-3B60D15213F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -98,5 +104,13 @@ Global
 		{0C260DE3-992C-4DCB-9C3C-3EEF57B55589}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C260DE3-992C-4DCB-9C3C-3EEF57B55589}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C260DE3-992C-4DCB-9C3C-3EEF57B55589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E18EE214-22E2-4F72-9EE9-2B7F71C75A7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64A359E0-FF1B-4D2C-9D6D-A974632E56B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64A359E0-FF1B-4D2C-9D6D-A974632E56B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64A359E0-FF1B-4D2C-9D6D-A974632E56B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64A359E0-FF1B-4D2C-9D6D-A974632E56B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

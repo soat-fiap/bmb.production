@@ -2,6 +2,7 @@ using Bmb.Production.Application.Dtos;
 using Bmb.Production.Application.UseCases;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model;
+using Bmb.Production.Core.Model.Dto;
 
 namespace Bmb.Production.Application;
 
@@ -9,13 +10,19 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
 {
     public async Task<KitchenQueueResponse> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        var receivedOrdersTask = kitchenOrderRepository.GetAllAsync(KitchenQueue.Received, cancellationToken);
-        var inPreparationOrdersTask = kitchenOrderRepository.GetAllAsync(KitchenQueue.InPreparation, cancellationToken);
-        var readyOrdersTask = kitchenOrderRepository.GetAllAsync(KitchenQueue.Ready, cancellationToken);
+        var orders = await kitchenOrderRepository.GetAllAsync(cancellationToken);
 
-        await Task.WhenAll(receivedOrdersTask, inPreparationOrdersTask, readyOrdersTask);
+        var received = orders.Where(o => o.Status is KitchenOrderStatus.Received);
+        var inPreparation = orders.Where(o => o.Status is KitchenOrderStatus.InPreparation);
 
-        return new KitchenQueueResponse(receivedOrdersTask.Result, inPreparationOrdersTask.Result,
-            readyOrdersTask.Result);
+        var ready = orders.Where(o => o.Status is KitchenOrderStatus.Ready);
+
+        return new KitchenQueueResponse(
+            GetOrderTrackingCode(received),
+            GetOrderTrackingCode(inPreparation),
+            GetOrderTrackingCode(ready));
     }
+
+    private IReadOnlyCollection<string> GetOrderTrackingCode(IEnumerable<KitchenOrderDto> orders) =>
+        orders.Select(o => o.OrderTrackingCode).ToList();
 }

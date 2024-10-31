@@ -2,7 +2,7 @@
 using Bmb.Production.Application;
 using Bmb.Production.Bus;
 using Bmb.Production.Controllers;
-using Bmb.Production.Redis.Repository;
+using Bmb.Production.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

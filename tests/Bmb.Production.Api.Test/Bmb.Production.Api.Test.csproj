@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Bmb.Production.Api\Bmb.Production.Api.csproj" />
+      <ProjectReference Include="..\..\src\Bmb.Production.Redis\Bmb.Production.Redis.csproj" />
     </ItemGroup>
 
 </Project>

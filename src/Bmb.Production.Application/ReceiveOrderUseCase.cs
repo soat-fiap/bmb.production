@@ -1,11 +1,17 @@
 using Bmb.Production.Application.UseCases;
+using Bmb.Production.Core.Contracts;
 
 namespace Bmb.Production.Application;
 
-public class ReceiveOrderUseCase : IReceiveOrderUseCase
+public class ReceiveOrderUseCase(IKitchenOrderRepository kitchenOrderRepository) : IReceiveOrderUseCase
 {
-    public Task ExecuteAsync(Guid orderId, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(Guid orderId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var order = await kitchenOrderRepository.GetAsync(orderId, cancellationToken);
+
+        if (order is null)
+            return;
+
+        await kitchenOrderRepository.EnqueueOrderAsync(order!, cancellationToken);
     }
 }

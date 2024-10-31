@@ -1,4 +1,5 @@
 using Bmb.Domain.Core.Events.Notifications;
+using Bmb.Test.Common;
 using FluentAssertions;
 using JetBrains.Annotations;
 using MassTransit;
@@ -55,19 +56,5 @@ namespace Bmb.Production.Bus.Test
         }
     }
 
-    public static class LoggerExtensions
-    {
-        public static void VerifyLog<T>(this Mock<ILogger<T>> loggerMock, Action<ILogger<T>> verify, LogLevel logLevel,
-            Times times)
-        {
-            loggerMock.Verify(
-                x => x.Log(
-                    logLevel,
-                    0,
-                    IsAny<IsAnyType>(),
-                    IsAny<Exception>(),
-                    IsAny<Func<IsAnyType, Exception?, string>>()),
-                times);
-        }
-    }
+   
 }

@@ -3,6 +3,7 @@ using AutoFixture;
 using Bmb.Production.Application;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model;
+using Bmb.Production.Core.Model.Dto;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
@@ -27,31 +28,32 @@ public class GetKitchenLineUseCaseTest
     {
         // Arrange
         var fixture = new Fixture();
-        var receivedOrders = fixture.CreateMany<string>().ToImmutableList();
-        var inPreparationOrders = fixture.CreateMany<string>().ToImmutableList();
-        var readyOrders = fixture.CreateMany<string>().ToImmutableList();
 
-        _mockKitchenOrderRepository.Setup(r => r.GetAllAsync(KitchenQueue.Received, default))
-            .ReturnsAsync(receivedOrders)
-            .Verifiable();
+        var receivedOrders = CreateOrders(fixture, KitchenOrderStatus.Received);
+        var inPreparationOrders = CreateOrders(fixture, KitchenOrderStatus.InPreparation);
+        var readyOrders = CreateOrders(fixture, KitchenOrderStatus.Ready);
 
-        _mockKitchenOrderRepository.Setup(r => r.GetAllAsync(KitchenQueue.InPreparation, default))
-            .ReturnsAsync(inPreparationOrders)
-            .Verifiable();
-
-        _mockKitchenOrderRepository.Setup(r => r.GetAllAsync(KitchenQueue.Ready, default))
-            .ReturnsAsync(readyOrders)
+        _mockKitchenOrderRepository.Setup(r => r.GetAllAsync(default))
+            .ReturnsAsync(receivedOrders.Concat(inPreparationOrders).Concat(readyOrders).ToImmutableList())
             .Verifiable();
 
         // Act
-        var response = await _useCase.ExecuteAsync(default);
+        var response = await _useCase.ExecuteAsync();
 
         // Assert
         using var scope = new AssertionScope();
-        response.Received.Should().BeEquivalentTo(receivedOrders);
-        response.InPreparation.Should().BeEquivalentTo(inPreparationOrders);
-        response.Ready.Should().BeEquivalentTo(readyOrders);
+        response.Received.Should().BeEquivalentTo(receivedOrders.Select(i => i.OrderTrackingCode));
+        response.InPreparation.Should().BeEquivalentTo(inPreparationOrders.Select(i => i.OrderTrackingCode));
+        response.Ready.Should().BeEquivalentTo(readyOrders.Select(i => i.OrderTrackingCode));
 
-        _mockKitchenOrderRepository.Verify(r => r.GetAllAsync(It.IsAny<KitchenQueue>(), default), Times.Exactly(3));
+        _mockKitchenOrderRepository.Verify(r => r.GetAllAsync(default), Times.Once);
+
+        ImmutableList<KitchenOrderDto> CreateOrders(Fixture fixt, KitchenOrderStatus? status)
+        {
+            return fixt.Build<KitchenOrderDto>()
+                .With(dto => dto.Status, status)
+                .CreateMany()
+                .ToImmutableList();
+        }
     }
 }

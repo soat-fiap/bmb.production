@@ -2,6 +2,7 @@ using AutoFixture;
 using Bmb.Domain.Core.Events.Notifications;
 using Bmb.Production.Application.UseCases;
 using Bmb.Production.Bus.Consumers;
+using Bmb.Test.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
