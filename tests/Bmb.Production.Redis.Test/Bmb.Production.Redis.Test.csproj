@@ -17,7 +17,6 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="xunit" Version="2.5.3"/>
-        <PackageReference Include="Xunit.Gherkin.Quick" Version="4.5.0" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
 
@@ -26,9 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Bmb.Production.Application\Bmb.Production.Application.csproj" />
-      <ProjectReference Include="..\..\src\Bmb.Production.Bus\Bmb.Production.Bus.csproj" />
-      <ProjectReference Include="..\..\src\Bmb.Production.Controllers\Bmb.Production.Controllers.csproj" />
+      <ProjectReference Include="..\..\src\Bmb.Production.Redis\Bmb.Production.Redis.csproj" />
       <ProjectReference Include="..\Bmb.Test.Common\Bmb.Test.Common.csproj" />
     </ItemGroup>
 

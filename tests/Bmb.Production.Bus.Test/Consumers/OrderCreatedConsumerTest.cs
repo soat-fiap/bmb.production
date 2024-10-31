@@ -3,6 +3,7 @@ using Bmb.Domain.Core.Events.Integration;
 using Bmb.Production.Application.UseCases;
 using Bmb.Production.Bus.Consumers;
 using Bmb.Production.Core.Model.Dto;
+using Bmb.Test.Common;
 using FluentAssertions;
 using JetBrains.Annotations;
 using MassTransit;

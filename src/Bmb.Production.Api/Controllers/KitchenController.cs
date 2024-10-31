@@ -24,7 +24,8 @@ public class KitchenController(IKitchenOrderService kitchenOrderService) : Contr
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Authorize(Roles = BmbRoles.Kitchen)]
+    // [Authorize(Roles = BmbRoles.Kitchen)]
+    [AllowAnonymous]
     public async Task<ActionResult<KitchenQueueResponse>> Get(CancellationToken cancellationToken)
     {
         var orders = await kitchenOrderService.GetAllOrdersAsync(cancellationToken);
