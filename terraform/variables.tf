@@ -35,12 +35,12 @@ variable "jwt_aud" {
 
 variable "api_docker_image" {
   type    = string
-  default = "ghcr.io/soat-fiap/bmb.production/api:1.2.1"
+  default = "ghcr.io/soat-fiap/bmb.production/api:1.1.0"
 }
 
 variable "internal_elb_name" {
   type    = string
-  default = "api-internal-elb"
+  default = "kitchen-api-internal-elb"
 }
 
 variable "api_access_key_id" {
