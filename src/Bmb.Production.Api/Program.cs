@@ -57,6 +57,7 @@ try
     builder.Services.ConfigureHealthCheck();
     
     var app = builder.Build();
+    logger = app.Services.GetService<ILogger<Program>>();
     app.UseHttpLogging();
 
     // Configure the HTTP request pipeline.
