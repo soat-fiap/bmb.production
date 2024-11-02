@@ -21,14 +21,13 @@
       - ASPNETCORE_ENVIRONMENT=Development
       - Serilog__WriteTo__2__Args__serverUrl=http://seq:5341
       - Serilog__Enrich__0=FromLogContext
-      - HybridCache__Expiration=${HybridCache_Expiration}
-      - HybridCache__LocalCacheExpiration=${HybridCache_LocalCacheExpiration}
-      - HybridCache__Flags=${HybridCache_Flags}
       - JwtOptions__SigningKey=${JwtOptions_SigningKey}
       - JwtOptions__Issuer=${JwtOptions_Issuer}
       - JwtOptions__Audience=${JwtOptions_Audience}
       - JwtOptions__ExpirationSeconds=${JwtOptions_ExpirationSeconds}
       - JwtOptions__UseAccessToken=${JwtOptions_UseAccessToken}
+      - RedisSettings__Host=redis
+      - RedisSettings__Port=6379
 
   seq:
     image: datalust/seq:latest
@@ -40,6 +39,16 @@
       - 8081:80
     networks:
       - tech-challenge
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+      - 8001:8001
+    networks:
+      - tech-challenge
+
 
 networks:
   tech-challenge:

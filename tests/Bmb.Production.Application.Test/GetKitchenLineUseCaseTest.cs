@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using AutoFixture;
-using Bmb.Production.Application;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model;
 using Bmb.Production.Core.Model.Dto;
@@ -9,7 +8,7 @@ using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Moq;
 
-namespace Bmb.Production.Bus.Test;
+namespace Bmb.Production.Application.Test;
 
 [TestSubject(typeof(GetKitchenLineUseCase))]
 public class GetKitchenLineUseCaseTest
@@ -29,8 +28,8 @@ public class GetKitchenLineUseCaseTest
         // Arrange
         var fixture = new Fixture();
 
-        var receivedOrders = CreateOrders(fixture, KitchenOrderStatus.Received);
-        var inPreparationOrders = CreateOrders(fixture, KitchenOrderStatus.InPreparation);
+        var receivedOrders = CreateOrders(fixture, KitchenOrderStatus.Queued);
+        var inPreparationOrders = CreateOrders(fixture, KitchenOrderStatus.Preparing);
         var readyOrders = CreateOrders(fixture, KitchenOrderStatus.Ready);
 
         _mockKitchenOrderRepository.Setup(r => r.GetAllAsync(default))
@@ -42,7 +41,7 @@ public class GetKitchenLineUseCaseTest
 
         // Assert
         using var scope = new AssertionScope();
-        response.Received.Should().BeEquivalentTo(receivedOrders.Select(i => i.OrderTrackingCode));
+        response.Queued.Should().BeEquivalentTo(receivedOrders.Select(i => i.OrderTrackingCode));
         response.InPreparation.Should().BeEquivalentTo(inPreparationOrders.Select(i => i.OrderTrackingCode));
         response.Ready.Should().BeEquivalentTo(readyOrders.Select(i => i.OrderTrackingCode));
 

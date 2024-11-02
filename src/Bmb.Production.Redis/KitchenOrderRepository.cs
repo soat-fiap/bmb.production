@@ -11,8 +11,8 @@ public class KitchenOrderRepository : IKitchenOrderRepository
 {
     private readonly ILogger<KitchenOrderRepository> _logger;
     private readonly IDatabase _database;
+
     public static string KdsOrderKey = "kds_order";
-    public static string KdsOrderStatusKey = "kds_order_status";
     public static string KdsReceivedOrdersKey = "kds_received";
     public static string KdsOrderSet = "kds_set";
 
@@ -25,10 +25,7 @@ public class KitchenOrderRepository : IKitchenOrderRepository
     public async Task SaveAsync(KitchenOrderDto order, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Saving order with ID {OrderId}", order.OrderId);
-        await _database.HashSetAsync($"{KdsOrderKey}:{order.OrderId}", new HashEntry[]
-        {
-            new("value", JsonSerializer.Serialize(order))
-        });
+        await _database.StringSetAsync($"{KdsOrderKey}:{order.OrderId}", JsonSerializer.Serialize(order));
         _logger.LogInformation("Order with ID {OrderId} saved successfully", order.OrderId);
     }
 
@@ -40,9 +37,18 @@ public class KitchenOrderRepository : IKitchenOrderRepository
 
         var orders = new List<KitchenOrderDto>();
 
-        foreach (var key in ordersSetKeys)
+        var batch = _database.CreateBatch();
+        var tasks = new List<Task<RedisValue>>();
+
+        ordersSetKeys.ToList().ForEach(key => tasks.Add(batch.StringGetAsync(key)));
+
+        batch.Execute();
+
+        await Task.WhenAll(tasks);
+
+        foreach (var task in tasks)
         {
-            var response = await _database.HashGetAsync(key, "value");
+            var response = task.Result;
             if (response.HasValue)
             {
                 orders.Add(JsonSerializer.Deserialize<KitchenOrderDto>(response!));
@@ -56,26 +62,27 @@ public class KitchenOrderRepository : IKitchenOrderRepository
     public async Task<KitchenOrderDto?> GetAsync(Guid orderId, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Retrieving order with ID {OrderId}", orderId);
-        var response = await _database.HashGetAsync($"{KdsOrderKey}:{orderId}", "value");
-        if (!response.HasValue)
+
+        var orderRedisValue = await _database.StringGetAsync($"{KdsOrderKey}:{orderId}");
+        if (!orderRedisValue.HasValue)
         {
             _logger.LogWarning("Order with ID {OrderId} not found", orderId);
             return null;
         }
 
-        _logger.LogInformation("Order with ID {OrderId} retrieved successfully", orderId);
-        return JsonSerializer.Deserialize<KitchenOrderDto>(response!);
+        var order = JsonSerializer.Deserialize<KitchenOrderDto>(orderRedisValue!);
+
+        _logger.LogInformation("Order with ID {OrderId} retrieved successfully", order.OrderId);
+        return order;
     }
 
     public async Task EnqueueOrderAsync(KitchenOrderDto order, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Enqueuing order with ID {OrderId}", order.OrderId);
 
-        var transaction = _database.CreateTransaction();
-        await transaction.SetAddAsync(KdsOrderSet, order.OrderId.ToString());
-        await transaction.ListLeftPushAsync(KdsReceivedOrdersKey, order.OrderId.ToString());
-        await transaction.ExecuteAsync();
-        
+        await _database.SetAddAsync(KdsOrderSet, order.OrderId.ToString());
+        await _database.ListLeftPushAsync(KdsReceivedOrdersKey, order.OrderId.ToString());
+
         _logger.LogInformation("Order with ID {OrderId} enqueued successfully", order.OrderId);
     }
 
@@ -90,17 +97,20 @@ public class KitchenOrderRepository : IKitchenOrderRepository
             return default;
         }
 
-        return JsonSerializer.Deserialize<KitchenOrderDto>(response!);
+        var orderDetail = await _database.StringGetAsync($"{KdsOrderKey}:{response.ToString()}");
+        return JsonSerializer.Deserialize<KitchenOrderDto>(orderDetail!);
     }
 
     public async Task UpdateStatusAsync(Guid orderId, KitchenOrderStatus status,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Updating status of order with ID {OrderId} to {Status}", orderId, status);
-        await _database.HashSetAsync($"{KdsOrderStatusKey}:{orderId}", new HashEntry[]
-        {
-            new("status", status.ToString())
-        });
+
+        var orderRedisValue = await _database.StringGetAsync($"{KdsOrderKey}:{orderId}");
+        var order = JsonSerializer.Deserialize<KitchenOrderDto>(orderRedisValue!);
+        order.Status = status;
+
+        await _database.StringSetAsync($"{KdsOrderKey}:{orderId}", JsonSerializer.Serialize(order));
         _logger.LogInformation("Status of order with ID {OrderId} updated to {Status}", orderId, status);
     }
 
@@ -108,7 +118,7 @@ public class KitchenOrderRepository : IKitchenOrderRepository
     {
         _logger.LogInformation("Deleting order with ID {OrderId}", orderId);
         await _database.KeyDeleteAsync($"{KdsOrderKey}:{orderId}");
-        await _database.KeyDeleteAsync($"{KdsOrderStatusKey}:{orderId}");
+        await _database.SetRemoveAsync(KdsOrderSet, orderId.ToString());
         _logger.LogInformation("Order with ID {OrderId} deleted successfully", orderId);
     }
 }

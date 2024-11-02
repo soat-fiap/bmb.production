@@ -16,13 +16,13 @@ namespace Bmb.Production.Bus.Test.Consumers;
 public class OrderPaymentConfirmedConsumerTest
 {
     private readonly Mock<ILogger<OrderPaymentConfirmedConsumer>> _loggerMock;
-    private readonly Mock<IReceiveOrderUseCase> _receiveOrderUseCaseMock;
+    private readonly Mock<IEnqueueOrderUseCase> _receiveOrderUseCaseMock;
     private readonly OrderPaymentConfirmedConsumer _consumer;
 
     public OrderPaymentConfirmedConsumerTest()
     {
         _loggerMock = new Mock<ILogger<OrderPaymentConfirmedConsumer>>();
-        _receiveOrderUseCaseMock = new Mock<IReceiveOrderUseCase>();
+        _receiveOrderUseCaseMock = new Mock<IEnqueueOrderUseCase>();
         _consumer = new OrderPaymentConfirmedConsumer(_loggerMock.Object, _receiveOrderUseCaseMock.Object);
     }
 

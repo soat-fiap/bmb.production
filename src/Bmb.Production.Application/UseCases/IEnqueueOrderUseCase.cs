@@ -1,6 +1,6 @@
 namespace Bmb.Production.Application.UseCases;
 
-public interface IReceiveOrderUseCase
+public interface IEnqueueOrderUseCase
 {
     Task ExecuteAsync(Guid orderId, CancellationToken cancellationToken = default);
 }

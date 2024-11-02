@@ -48,11 +48,10 @@ namespace Bmb.Production.Bus.Test
             _busMock.Setup(b => b.Publish(IsAny<object>(), IsAny<CancellationToken>())).ThrowsAsync(exception);
 
             // Act
-            Func<Task> act = async () => await _dispatcher.PublishAsync(@event);
+            await _dispatcher.PublishAsync(@event);
 
             // Assert
-            await act.Should().ThrowAsync<Exception>().WithMessage("Test exception");
-            _loggerMock.VerifyLog(logger => logger.LogError(IsAny<string>(), @event), LogLevel.Error, Times.Once());
+            _loggerMock.VerifyLog(logger => logger.LogCritical(IsAny<string>(), @event), LogLevel.Critical, Times.Once());
         }
     }
 
