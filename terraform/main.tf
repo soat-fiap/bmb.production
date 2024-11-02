@@ -22,9 +22,9 @@ resource "kubernetes_namespace" "production" {
 # EKS CLUSTER
 ##############################
 
-# data "aws_eks_cluster" "techchallenge_cluster" {
-#   name = var.eks_cluster_name
-# }
+data "aws_eks_cluster" "techchallenge_cluster" {
+  name = var.eks_cluster_name
+}
 
 ##############################
 # DATABASE
@@ -121,7 +121,7 @@ resource "kubernetes_config_map_v1" "config_map_api" {
   }
   data = {
     "ASPNETCORE_ENVIRONMENT"               = "Development"
-    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq.default.svc.cluster.local"
+    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq.fiap-log.svc.cluster.local"
     "RedisSettings__Host"                  = "redis"
     "RedisSettings__Port"                  = 6379
     "JwtOptions__Issuer"                   = local.jwt_issuer
@@ -286,89 +286,6 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
         target {
           average_utilization = 65
           type                = "Utilization"
-        }
-      }
-    }
-  }
-}
-
-#################################
-# SEQ
-#################################
-
-resource "kubernetes_service" "svc_seq" {
-  metadata {
-    name      = "svc-seq"
-    # namespace = kubernetes_namespace.production.metadata.0.name
-    labels = {
-      "terraform" = true
-    }
-  }
-  spec {
-    type = "NodePort"
-    port {
-      port      = 80
-      node_port = 30008
-    }
-    selector = {
-      app = "seq"
-    }
-  }
-}
-
-resource "kubernetes_deployment" "deployment_seq" {
-  metadata {
-    name      = "deployment-seq"
-    # namespace = kubernetes_namespace.production.metadata.0.name
-    labels = {
-      app         = "seq"
-      "terraform" = true
-    }
-  }
-  spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "seq"
-      }
-    }
-    template {
-      metadata {
-        name = "pod-seq"
-        labels = {
-          app         = "seq"
-          "terraform" = true
-        }
-      }
-      spec {
-        automount_service_account_token = false
-        container {
-          name  = "seq-container"
-          image = "datalust/seq:latest"
-          port {
-            container_port = 80
-          }
-          image_pull_policy = "IfNotPresent"
-          env {
-            name  = "ACCEPT_EULA"
-            value = "Y"
-          }
-          resources {
-            requests = {
-              cpu    = "50m"
-              memory = "120Mi"
-            }
-            limits = {
-              cpu    = "100m"
-              memory = "220Mi"
-            }
-          }
-        }
-        volume {
-          name = "dashboards-volume"
-          host_path {
-            path = "/home/docker/seq"
-          }
         }
       }
     }
