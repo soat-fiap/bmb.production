@@ -41,7 +41,7 @@
       - tech-challenge
 
   redis:
-    image: redis:latest
+    image: redis:8.0-M02-alpine3.20
     container_name: redis
     ports:
       - 6379:6379

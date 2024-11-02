@@ -9,9 +9,9 @@ using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
-ILogger<Program>? logger = null;
 try
 {
+    Log.Information("Initializing application");
     // Add services to the container.
     builder.Host.UseSerilog((context, configuration) =>
         configuration
@@ -54,10 +54,9 @@ try
         .Get<JwtOptions>();
     builder.Services.AddSingleton(jwtOptions);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-    builder.Services.ConfigureHealthCheck();
+    builder.Services.ConfigureHealthCheck(builder.Configuration);
     
     var app = builder.Build();
-    logger = app.Services.GetService<ILogger<Program>>();
     app.UseHttpLogging();
 
     // Configure the HTTP request pipeline.
@@ -87,7 +86,7 @@ try
 }
 catch (Exception ex)
 {
-    logger?.LogCritical(ex, "Application start-up failed");
+    Log.Fatal(ex, "Application start-up failed");
     Console.WriteLine(ex);
 }
 finally

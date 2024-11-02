@@ -13,10 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="HealthChecks\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Bmb.Production.Bus\Bmb.Production.Bus.csproj" />
       <ProjectReference Include="..\Bmb.Production.Controllers\Bmb.Production.Controllers.csproj" />
       <ProjectReference Include="..\Bmb.Production.Redis\Bmb.Production.Redis.csproj" />

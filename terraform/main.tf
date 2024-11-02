@@ -1,16 +1,3 @@
-##############################
-# EKS CLUSTER
-##############################
-
-data "aws_eks_cluster" "techchallenge_cluster" {
-  name = var.eks_cluster_name
-}
-
-##############################
-# DATABASE
-##############################
-
-
 locals {
   jwt_issuer            = var.jwt_issuer
   jwt_aud               = var.jwt_aud
@@ -21,16 +8,102 @@ locals {
   jwt_signing_key       = var.jwt_signing_key
 }
 
-
 ##############################
 # NAMESPACE
 ##############################
 
 resource "kubernetes_namespace" "production" {
   metadata {
-    name = "production"
+    name = "fiap-production"
   }
 }
+
+##############################
+# EKS CLUSTER
+##############################
+
+# data "aws_eks_cluster" "techchallenge_cluster" {
+#   name = var.eks_cluster_name
+# }
+
+##############################
+# DATABASE
+##############################
+
+
+resource "kubernetes_deployment" "redis" {
+  metadata {
+    name      = "redis"
+    namespace = kubernetes_namespace.production.metadata[0].name
+    labels = {
+      app = "redis"
+    }
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "redis"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "redis"
+        }
+      }
+
+      spec {
+        container {
+          name  = "redis"
+          image = "redis:8.0-M02-alpine3.20"
+
+          port {
+            container_port = 6379
+          }
+
+          resources {
+            limits = {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "256Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "redis" {
+  metadata {
+    name      = "redis"
+    namespace = kubernetes_namespace.production.metadata[0].name
+    labels = {
+      app = "redis"
+    }
+  }
+
+  spec {
+    selector = {
+      app = "redis"
+    }
+
+    port {
+      port        = 6379
+      target_port = 6379
+    }
+
+    type = "ClusterIP"
+  }
+}
+
 
 ##############################
 # CONFIGS/SECRETS
@@ -40,7 +113,7 @@ resource "kubernetes_namespace" "production" {
 resource "kubernetes_config_map_v1" "config_map_api" {
   metadata {
     name      = "configmap-production-api"
-    namespace = "production"
+    namespace = kubernetes_namespace.production.metadata.0.name
     labels = {
       "app"       = "production-api"
       "terraform" = true
@@ -48,35 +121,30 @@ resource "kubernetes_config_map_v1" "config_map_api" {
   }
   data = {
     "ASPNETCORE_ENVIRONMENT"               = "Development"
-    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq:80"
-    "Serilog__WriteTo__2__Args__formatter" = "Serilog.Formatting.Json.JsonFormatter, Serilog"
-    "Serilog__Enrich__0"                   = "FromLogContext"
-    "HybridCache__Expiration"              = "01:00:00"
-    "HybridCache__LocalCacheExpiration"    = "01:00:00"
-    "HybridCache__Flags"                   = "DisableDistributedCache"
+    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq.default.svc.cluster.local"
+    "RedisSettings__Host"                  = "redis"
+    "RedisSettings__Port"                  = 6379
     "JwtOptions__Issuer"                   = local.jwt_issuer
     "JwtOptions__Audience"                 = local.jwt_aud
     "JwtOptions__ExpirationSeconds"        = 3600
     "JwtOptions__UseAccessToken"           = true
-    "JwtOptions__SigningKey"               = local.jwt_signing_key
-    "AWS_SECRET_ACCESS_KEY"                = local.aws_secret_access_key
-    "AWS_ACCESS_KEY_ID"                    = local.aws_access_key
-    "AWS_DEFAULT_REGION"                   = local.aws_region
   }
 }
 
 resource "kubernetes_secret" "secret_api" {
   metadata {
     name      = "secret-production-api"
-    namespace = "production"
+    namespace = kubernetes_namespace.production.metadata.0.name
     labels = {
       app         = "api-pod"
       "terraform" = true
     }
   }
   data = {
-    "MercadoPago__WebhookSecret" = var.mercadopago_webhook_secret
-    "MercadoPago__AccessToken"   = var.mercadopago_accesstoken
+    "JwtOptions__SigningKey" = local.jwt_signing_key
+    "AWS_SECRET_ACCESS_KEY"  = local.aws_secret_access_key
+    "AWS_ACCESS_KEY_ID"      = local.aws_access_key
+    "AWS_DEFAULT_REGION"     = local.aws_region
   }
   type = "Opaque"
 }
@@ -88,7 +156,7 @@ resource "kubernetes_secret" "secret_api" {
 resource "kubernetes_service" "production-api-svc" {
   metadata {
     name      = var.internal_elb_name
-    namespace = "production"
+    namespace = kubernetes_namespace.production.metadata.0.name
     annotations = {
       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
@@ -116,7 +184,7 @@ resource "kubernetes_deployment" "deployment_production_api" {
 
   metadata {
     name      = "deployment-production-api"
-    namespace = "production"
+    namespace = kubernetes_namespace.production.metadata.0.name
     labels = {
       app         = "production-api"
       "terraform" = true
@@ -199,7 +267,7 @@ resource "kubernetes_deployment" "deployment_production_api" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
   metadata {
     name      = "hpa-production-api"
-    namespace = "production"
+    namespace = kubernetes_namespace.production.metadata.0.name
   }
   spec {
     max_replicas = 3
@@ -231,7 +299,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
 resource "kubernetes_service" "svc_seq" {
   metadata {
     name      = "svc-seq"
-    namespace = "production"
+    # namespace = kubernetes_namespace.production.metadata.0.name
     labels = {
       "terraform" = true
     }
@@ -251,7 +319,7 @@ resource "kubernetes_service" "svc_seq" {
 resource "kubernetes_deployment" "deployment_seq" {
   metadata {
     name      = "deployment-seq"
-    namespace = "production"
+    # namespace = kubernetes_namespace.production.metadata.0.name
     labels = {
       app         = "seq"
       "terraform" = true

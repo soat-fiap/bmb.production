@@ -2,6 +2,7 @@
 using Bmb.Production.Application;
 using Bmb.Production.Bus;
 using Bmb.Production.Controllers;
+using Bmb.Production.DI.HealthChecks;
 using Bmb.Production.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +20,9 @@ public static class ServiceCollectionsExtensions
         serviceCollection.AddUseCases();
     }
 
-    public static void ConfigureHealthCheck(this IServiceCollection services)
+    public static void ConfigureHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHealthChecks();
+        services.AddHealthChecks()
+            .AddCheck<RedisHealthCheck>("redis");
     }
-}   
+}
