@@ -12,8 +12,8 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
     {
         var orders = await kitchenOrderRepository.GetAllAsync(cancellationToken);
 
-        var received = orders.Where(o => o.Status is KitchenOrderStatus.Received);
-        var inPreparation = orders.Where(o => o.Status is KitchenOrderStatus.InPreparation);
+        var received = orders.Where(o => o.Status is KitchenOrderStatus.Queued);
+        var inPreparation = orders.Where(o => o.Status is KitchenOrderStatus.Preparing);
 
         var ready = orders.Where(o => o.Status is KitchenOrderStatus.Ready);
 

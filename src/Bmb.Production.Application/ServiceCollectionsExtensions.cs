@@ -11,6 +11,9 @@ public static class ServiceCollectionsExtensions
     {
         services.AddScoped<IGetKitchenLineUseCase, GetKitchenLineUseCase>()
             .AddScoped<IReplicateOrderUseCase, ReplicateOrderUseCase>()
-            .AddScoped<IReceiveOrderUseCase, ReceiveOrderUseCase>();
+            .AddScoped<IEnqueueOrderUseCase, EnqueueOrderUseCase>()
+            .AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>()
+            .AddScoped<IGetNextOrderUseCase, GetNextOrderUseCase>()
+            ;
     }
 }

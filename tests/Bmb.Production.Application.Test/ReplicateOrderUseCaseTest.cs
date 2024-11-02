@@ -1,12 +1,11 @@
 using AutoFixture;
-using Bmb.Production.Application;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model.Dto;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Moq;
 
-namespace Bmb.Production.Bus.Test;
+namespace Bmb.Production.Application.Test;
 
 [TestSubject(typeof(ReplicateOrderUseCase))]
 public class ReplicateOrderUseCaseTest

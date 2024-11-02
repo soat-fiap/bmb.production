@@ -1,12 +1,10 @@
-using System.Reflection;
+using System.Text.Json.Serialization;
 using Bmb.Production.Api.Auth;
 using Bmb.Production.Api.Exceptions;
 using Bmb.Production.Api.Extensions;
 using Bmb.Production.DI;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
@@ -40,7 +38,11 @@ try
 
     builder.Services.AddHttpLogging(_ => { });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });;
     builder.Services.IoCSetup(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -63,7 +65,6 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
-
 
     app.UseHealthChecks("/healthz", new HealthCheckOptions
     {

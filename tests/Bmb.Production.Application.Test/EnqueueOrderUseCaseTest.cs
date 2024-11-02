@@ -1,17 +1,25 @@
 using AutoFixture;
-using Bmb.Production.Application;
+using Bmb.Production.Application.UseCases;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model.Dto;
+using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Moq;
 
-namespace Bmb.Production.Bus.Test;
+namespace Bmb.Production.Application.Test;
 
-[TestSubject(typeof(ReceiveOrderUseCase))]
-public class ReceiveOrderUseCaseTest
+[TestSubject(typeof(EnqueueOrderUseCase))]
+public class EnqueueOrderUseCaseTest
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<IKitchenOrderRepository> _mockKitchenOrderRepository = new();
+    private readonly Mock<IUpdateOrderStatusUseCase> _mockUpdateOrderStatusUseCase = new();
+    private readonly EnqueueOrderUseCase _useCase;
+
+    public EnqueueOrderUseCaseTest()
+    {
+        _useCase = new EnqueueOrderUseCase(_mockKitchenOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object);
+    }
 
     [Fact]
     public async Task ExecuteAsync_ShouldEnqueueOrder_WhenOrderExists()
@@ -19,7 +27,7 @@ public class ReceiveOrderUseCaseTest
         // Arrange
         var orderId = Guid.NewGuid();
         var order = _fixture.Create<KitchenOrderDto>();
-        
+
         _mockKitchenOrderRepository.Setup(r => r.GetAsync(orderId, default))
             .ReturnsAsync(order)
             .Verifiable();
@@ -27,10 +35,8 @@ public class ReceiveOrderUseCaseTest
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var useCase = new ReceiveOrderUseCase(_mockKitchenOrderRepository.Object);
-
         // Act
-        await useCase.ExecuteAsync(orderId);
+        await _useCase.ExecuteAsync(orderId);
 
         // Assert
         _mockKitchenOrderRepository.Verify(r => r.GetAsync(orderId, default), Times.Once);
@@ -41,18 +47,17 @@ public class ReceiveOrderUseCaseTest
     public async Task ExecuteAsync_ShouldReturnNull_WhenOrderDoesNotExist()
     {
         // Arrange
-        var mockKitchenOrderRepository = new Mock<IKitchenOrderRepository>();
-        mockKitchenOrderRepository.Setup(r => r.GetAsync(It.IsAny<Guid>(), default))
+        var orderId = Guid.NewGuid();
+        _mockKitchenOrderRepository.Setup(r => r.GetAsync(orderId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((KitchenOrderDto?)null)
             .Verifiable();
 
-        var useCase = new ReceiveOrderUseCase(mockKitchenOrderRepository.Object);
-
         // Act
-        await useCase.ExecuteAsync(Guid.NewGuid());
+        await _useCase.ExecuteAsync(orderId, CancellationToken.None);
 
         // Assert
-        mockKitchenOrderRepository.Verify(r => r.GetAsync(It.IsAny<Guid>(), default), Times.Once);
-        mockKitchenOrderRepository.Verify(r => r.EnqueueOrderAsync(It.IsAny<KitchenOrderDto>(), default), Times.Never);
+        using var scope = new AssertionScope();
+        _mockKitchenOrderRepository.Verify(r => r.GetAsync(orderId, It.IsAny<CancellationToken>()), Times.Once);
+        _mockKitchenOrderRepository.Verify(r => r.EnqueueOrderAsync(It.IsAny<KitchenOrderDto>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

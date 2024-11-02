@@ -27,8 +27,7 @@ public class Dispatcher : IDispatcher
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error when trying to publish event: {Event}", @event);
-            throw;
+            _logger.LogCritical(e, "Error when trying to publish event: {Event}", @event);
         }
     }
 }

@@ -9,14 +9,15 @@ namespace Bmb.Production.Controllers.Test;
 [TestSubject(typeof(KitchenOrderService))]
 public class KitchenOrderServiceTest
 {
-
     private readonly Mock<IGetKitchenLineUseCase> _getKitchenLineUseCaseMock;
     private readonly KitchenOrderService _kitchenOrderService;
 
     public KitchenOrderServiceTest()
     {
         _getKitchenLineUseCaseMock = new Mock<IGetKitchenLineUseCase>();
-        _kitchenOrderService = new KitchenOrderService(_getKitchenLineUseCaseMock.Object);
+        _kitchenOrderService = new KitchenOrderService(_getKitchenLineUseCaseMock.Object,
+            Mock.Of<IUpdateOrderStatusUseCase>(),
+            Mock.Of<IGetNextOrderUseCase>());
     }
 
     [Fact]

@@ -8,7 +8,7 @@ internal static class Presenter
 {
     internal static KitchenOrderDto ToDto(this OrderCreated order)
     {
-        return new KitchenOrderDto(order.Id, order.OrderTrackingCode, order.Items.ToDto(), KitchenOrderStatus.Received);
+        return new KitchenOrderDto(order.Id, order.OrderTrackingCode, order.Items.ToDto(), KitchenOrderStatus.Processing);
     }
 
     private static List<OrderItemDto> ToDto(this List<OrderCreated.OrderItemReplicaDto>? items)
