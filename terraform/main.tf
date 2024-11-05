@@ -155,7 +155,7 @@ resource "kubernetes_secret" "secret_api" {
 
 resource "kubernetes_service" "production-api-svc" {
   metadata {
-    name      = var.internal_elb_name
+    name      = "api-internal"
     namespace = kubernetes_namespace.production.metadata.0.name
     annotations = {
       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
@@ -166,7 +166,7 @@ resource "kubernetes_service" "production-api-svc" {
     port {
       port        = 80
       target_port = 8080
-      node_port   = 30000
+      node_port   = 30007
       protocol    = "TCP"
     }
     type = "LoadBalancer"
