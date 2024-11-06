@@ -20,7 +20,7 @@ public static class ServiceCollectionsExtensions
         serviceCollection.AddUseCases();
     }
 
-    public static void ConfigureHealthCheck(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureHealthCheck(this IServiceCollection services)
     {
         services.AddHealthChecks()
             .AddCheck<RedisHealthCheck>("redis");

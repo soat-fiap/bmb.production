@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Bmb.Domain.Core.Events;
 using Bmb.Production.Bus.Consumers;
 using Bmb.Production.Core.Contracts;
 using MassTransit;

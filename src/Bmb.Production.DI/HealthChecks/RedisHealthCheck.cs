@@ -11,7 +11,8 @@ public class RedisHealthCheck : IHealthCheck
 
     public RedisHealthCheck(IConnectionMultiplexer connectionMultiplexer)
     {
-        _connectionMultiplexer = connectionMultiplexer;
+        _connectionMultiplexer = connectionMultiplexer ??
+                                 throw new ArgumentNullException(nameof(connectionMultiplexer));
     }
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
@@ -19,19 +20,45 @@ public class RedisHealthCheck : IHealthCheck
     {
         try
         {
-            var database = _connectionMultiplexer.GetDatabase();
-            var result = await database.ExecuteAsync("PING");
-
-            if (result.ToString() == "PONG")
+            if (!_connectionMultiplexer.IsConnected)
             {
-                return HealthCheckResult.Healthy("Redis is healthy");
+                return HealthCheckResult.Unhealthy(
+                    "Redis connection is not established",
+                    data: new Dictionary<string, object>
+                    {
+                        ["endpoint"] = _connectionMultiplexer.Configuration
+                    });
             }
 
-            return HealthCheckResult.Unhealthy("Redis is unhealthy");
+            var database = _connectionMultiplexer.GetDatabase();
+            var result = await database.ExecuteAsync("PING")
+                .WaitAsync(TimeSpan.FromSeconds(5), cancellationToken);
+            var response = result?.ToString();
+            if (response == "PONG")
+            {
+                return HealthCheckResult.Healthy("Redis is healthy",
+                    data: new Dictionary<string, object>
+                    {
+                        ["endpoint"] = _connectionMultiplexer.Configuration
+                    });
+            }
+
+            return HealthCheckResult.Unhealthy($"Unexpected Redis response: {response}",
+                data: new Dictionary<string, object>
+                {
+                    ["response"] = response,
+                    ["endpoint"] = _connectionMultiplexer.Configuration
+                });
         }
         catch (Exception ex)
         {
-            return HealthCheckResult.Unhealthy("Redis is unhealthy", ex);
+            return HealthCheckResult.Unhealthy(
+                "Redis health check failed",
+                ex,
+                data: new Dictionary<string, object>
+                {
+                    ["endpoint"] = _connectionMultiplexer.Configuration
+                });
         }
     }
 }
