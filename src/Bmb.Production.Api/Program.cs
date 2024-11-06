@@ -54,7 +54,7 @@ try
         .Get<JwtOptions>();
     builder.Services.AddSingleton(jwtOptions);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-    builder.Services.ConfigureHealthCheck(builder.Configuration);
+    builder.Services.ConfigureHealthCheck();
     
     var app = builder.Build();
     app.UseHttpLogging();

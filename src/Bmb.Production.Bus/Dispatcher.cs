@@ -1,3 +1,4 @@
+using Bmb.Domain.Core.Events;
 using Bmb.Domain.Core.Events.Notifications;
 using Bmb.Production.Core.Contracts;
 using MassTransit;

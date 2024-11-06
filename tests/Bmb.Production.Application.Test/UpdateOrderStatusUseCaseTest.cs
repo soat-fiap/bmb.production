@@ -1,11 +1,12 @@
 using AutoFixture;
-using Bmb.Domain.Core.Events.Notifications;
+using Bmb.Domain.Core.Events;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model;
 using Bmb.Production.Core.Model.Dto;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Moq;
+using OrderStatusChanged = Bmb.Domain.Core.Events.Notifications.OrderStatusChanged;
 
 namespace Bmb.Production.Application.Test;
 

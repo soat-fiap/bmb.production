@@ -1,7 +1,8 @@
-using Bmb.Domain.Core.Events.Notifications;
+using Bmb.Domain.Core.Events;
 using Bmb.Domain.Core.ValueObjects;
 using Bmb.Production.Application.UseCases;
 using Bmb.Production.Core.Contracts;
+using OrderStatusChanged = Bmb.Domain.Core.Events.Notifications.OrderStatusChanged;
 
 namespace Bmb.Production.Application;
 
