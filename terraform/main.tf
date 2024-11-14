@@ -19,14 +19,6 @@ resource "kubernetes_namespace" "production" {
 }
 
 ##############################
-# EKS CLUSTER
-##############################
-
-data "aws_eks_cluster" "techchallenge_cluster" {
-  name = var.eks_cluster_name
-}
-
-##############################
 # DATABASE
 ##############################
 
@@ -121,7 +113,7 @@ resource "kubernetes_config_map_v1" "config_map_api" {
   }
   data = {
     "ASPNETCORE_ENVIRONMENT"               = "Development"
-    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq.fiap-log.svc.cluster.local"
+    "Serilog__WriteTo__2__Args__serverUrl" = "http://api-internal.fiap-log.svc.cluster.local"
     "RedisSettings__Host"                  = "redis"
     "RedisSettings__Port"                  = 6379
     "JwtOptions__Issuer"                   = local.jwt_issuer
