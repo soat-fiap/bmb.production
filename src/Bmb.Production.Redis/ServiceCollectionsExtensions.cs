@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using Bmb.Production.Core.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ public static class ServiceCollectionsExtensions
             {
                 EndPoints =
                 {
-                    $"{redisSettings.Host}:{redisSettings.Port}"
+                    new DnsEndPoint(redisSettings.Host, redisSettings.Port)
                 },
                 AbortOnConnectFail = false,
             }));
