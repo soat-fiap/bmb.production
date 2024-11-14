@@ -13,7 +13,6 @@ public static class ServiceCollectionsExtensions
             .AddScoped<IReplicateOrderUseCase, ReplicateOrderUseCase>()
             .AddScoped<IEnqueueOrderUseCase, EnqueueOrderUseCase>()
             .AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>()
-            .AddScoped<IGetNextOrderUseCase, GetNextOrderUseCase>()
-            ;
+            .AddScoped<IGetNextOrderUseCase, GetNextOrderUseCase>();
     }
 }

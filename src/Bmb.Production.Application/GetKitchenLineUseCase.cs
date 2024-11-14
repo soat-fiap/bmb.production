@@ -11,10 +11,8 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
     public async Task<KitchenQueueResponse> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var orders = await kitchenOrderRepository.GetAllAsync(cancellationToken);
-
         var received = orders.Where(o => o.Status is KitchenOrderStatus.Queued);
         var inPreparation = orders.Where(o => o.Status is KitchenOrderStatus.Preparing);
-
         var ready = orders.Where(o => o.Status is KitchenOrderStatus.Ready);
 
         return new KitchenQueueResponse(
@@ -23,6 +21,6 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
             GetOrderTrackingCode(ready));
     }
 
-    private IReadOnlyCollection<string> GetOrderTrackingCode(IEnumerable<KitchenOrderDto> orders) =>
-        orders.Select(o => o.OrderTrackingCode).ToList();
+    private IReadOnlyCollection<KitchenQueueItem> GetOrderTrackingCode(IEnumerable<KitchenOrderDto> orders) =>
+        orders.Select(o => o.MapToKitchenQueueItem()).ToList();
 }

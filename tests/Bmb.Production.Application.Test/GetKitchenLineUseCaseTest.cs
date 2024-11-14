@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using AutoFixture;
+using Bmb.Production.Application.Dtos;
 using Bmb.Production.Core.Contracts;
 using Bmb.Production.Core.Model;
 using Bmb.Production.Core.Model.Dto;
@@ -41,9 +42,9 @@ public class GetKitchenLineUseCaseTest
 
         // Assert
         using var scope = new AssertionScope();
-        response.Queued.Should().BeEquivalentTo(receivedOrders.Select(i => i.OrderTrackingCode));
-        response.InPreparation.Should().BeEquivalentTo(inPreparationOrders.Select(i => i.OrderTrackingCode));
-        response.Ready.Should().BeEquivalentTo(readyOrders.Select(i => i.OrderTrackingCode));
+        response.Queued.Should().BeEquivalentTo(receivedOrders.Select(i => i.MapToKitchenQueueItem()));
+        response.InPreparation.Should().BeEquivalentTo(inPreparationOrders.Select(i => i.MapToKitchenQueueItem()));
+        response.Ready.Should().BeEquivalentTo(readyOrders.Select(i => i.MapToKitchenQueueItem()));
 
         _mockKitchenOrderRepository.Verify(r => r.GetAllAsync(default), Times.Once);
 
