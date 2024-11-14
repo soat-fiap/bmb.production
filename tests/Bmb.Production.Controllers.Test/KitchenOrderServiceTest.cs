@@ -27,9 +27,9 @@ public class KitchenOrderServiceTest
     public async Task GetAllOrdersAsync_ShouldReturnKitchenQueueResponse_WhenCalled()
     {
         var expectedResponse = new KitchenQueueResponse(
-            new List<string> { "Order1" },
-            new List<string> { "Order2" },
-            new List<string> { "Order3" }
+            new List<KitchenQueueItem> { new(Guid.NewGuid(), "Order1") },
+            new List<KitchenQueueItem> { new(Guid.NewGuid(), "Order2") },
+            new List<KitchenQueueItem> { new(Guid.NewGuid(), "Order3") }
         );
 
         _getKitchenLineUseCaseMock

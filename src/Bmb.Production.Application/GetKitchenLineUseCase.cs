@@ -14,7 +14,6 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
 
         var received = orders.Where(o => o.Status is KitchenOrderStatus.Queued);
         var inPreparation = orders.Where(o => o.Status is KitchenOrderStatus.Preparing);
-
         var ready = orders.Where(o => o.Status is KitchenOrderStatus.Ready);
 
         return new KitchenQueueResponse(
@@ -23,6 +22,6 @@ public class GetKitchenLineUseCase(IKitchenOrderRepository kitchenOrderRepositor
             GetOrderTrackingCode(ready));
     }
 
-    private IReadOnlyCollection<string> GetOrderTrackingCode(IEnumerable<KitchenOrderDto> orders) =>
-        orders.Select(o => o.OrderTrackingCode).ToList();
+    private IReadOnlyCollection<KitchenQueueItem> GetOrderTrackingCode(IEnumerable<KitchenOrderDto> orders) =>
+        orders.Select(o => o.MapToKitchenQueueItem()).ToList();
 }
