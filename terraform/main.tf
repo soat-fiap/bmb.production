@@ -158,7 +158,7 @@ resource "kubernetes_service" "production-api-svc" {
     port {
       port        = 80
       target_port = 8080
-      node_port   = 30007
+      node_port   = 30003
       protocol    = "TCP"
     }
     type = "LoadBalancer"
