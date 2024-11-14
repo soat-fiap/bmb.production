@@ -21,6 +21,15 @@ provider "aws" {
 }
 
 
+##############################
+# EKS CLUSTER
+##############################
+
+data "aws_eks_cluster" "techchallenge_cluster" {
+  name = var.eks_cluster_name
+}
+
+
 # provider "kubernetes" {
 #   config_path    = "C:\\Users\\italo\\.kube\\config"
 #   config_context = "minikube"
