@@ -30,7 +30,6 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     [HttpGet]
     [Authorize(Roles = BmbRoles.Kitchen)]
     [ProducesResponseType<KitchenQueueResponse>(StatusCodes.Status200OK)]
-    [AllowAnonymous]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var orders = await kitchenOrderService.GetAllOrdersAsync(cancellationToken);
@@ -47,7 +46,6 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     [HttpPatch]
     [Route("{orderId:guid}/status")]
     [Authorize(Roles = BmbRoles.Kitchen)]
-    [AllowAnonymous]
     public async Task<IActionResult> UpdateStatus(Guid orderId,
         [FromBody] [Required] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
@@ -70,7 +68,6 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     [HttpGet]
     [Route("next")]
     [Authorize(Roles = BmbRoles.Kitchen)]
-    [AllowAnonymous]
     [ProducesResponseType<NextOrderResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetNextOrder(CancellationToken cancellationToken)
