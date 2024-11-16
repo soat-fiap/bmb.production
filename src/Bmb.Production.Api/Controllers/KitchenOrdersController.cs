@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using Bmb.Production.Api.Auth;
+using Bmb.Auth;
 using Bmb.Production.Api.Extensions;
 using Bmb.Production.Api.Model;
 using Bmb.Production.Application.Dtos;

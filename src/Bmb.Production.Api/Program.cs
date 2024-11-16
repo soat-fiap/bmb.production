@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Bmb.Production.Api.Auth;
+using Bmb.Auth;
 using Bmb.Production.Api.Exceptions;
 using Bmb.Production.Api.Extensions;
 using Bmb.Production.DI;
