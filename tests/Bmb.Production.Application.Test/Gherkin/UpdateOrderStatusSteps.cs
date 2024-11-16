@@ -43,16 +43,32 @@ public class UpdateOrderStatusSteps : Feature
             .Verifiable();
     }
 
+    [And("the order status can be updated")]
+    public void GivenOrderStatusCanBeUpdated()
+    {
+        _mockKitchenOrderRepository.Setup(r => r.UpdateStatusAsync(_orderId, KitchenOrderStatus.Preparing, default))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+    }
+
     [When("the UseCase is executed")]
     public Task Execute_UseCase()
     {
-        return _useCase.ExecuteAsync(_orderId, KitchenOrderStatus.Preparing,default);
+        return _useCase.ExecuteAsync(_orderId, KitchenOrderStatus.Preparing, default);
     }
-    
+
     [Then("it should update the order status")]
     public void Update_OrderStatus()
     {
         _mockKitchenOrderRepository.Setup(r => r.UpdateStatusAsync(_orderId, KitchenOrderStatus.Preparing, default))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+    }
+
+    [And("the event dispatcher is available")]
+    public void GivenEventDispatcherIsAvailable()
+    {
+        _mockDispatcher.Setup(d => d.PublishAsync(It.IsAny<OrderStatusChanged>(), default))
             .Returns(Task.CompletedTask)
             .Verifiable();
     }
@@ -63,5 +79,11 @@ public class UpdateOrderStatusSteps : Feature
         _mockDispatcher.Setup(d => d.PublishAsync(new OrderStatusChanged(_orderId, OrderStatus.InPreparation), default))
             .Returns(Task.CompletedTask)
             .Verifiable();
+        _mockDispatcher.Verify(d => d.PublishAsync(
+                It.Is<OrderStatusChanged>(e =>
+                    e.OrderId == _orderId &&
+                    e.Status == OrderStatus.InPreparation),
+                default),
+            Times.Once);
     }
 }
