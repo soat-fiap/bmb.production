@@ -26,6 +26,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Bmb.Production.Application\Bmb.Production.Application.csproj" />
+      <ProjectReference Include="..\Bmb.Test.Common\Bmb.Test.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Gherkin\UpdateOrderStatus.feature">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
