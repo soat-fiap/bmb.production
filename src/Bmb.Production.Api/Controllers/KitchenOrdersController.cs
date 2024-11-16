@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using Bmb.Production.Api.Auth;
 using Bmb.Production.Api.Extensions;
 using Bmb.Production.Api.Model;
 using Bmb.Production.Application.Dtos;
@@ -27,7 +28,7 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>An <see cref="IActionResult"/> containing the list of kitchen orders.</returns>
     [HttpGet]
-    // [Authorize(Roles = BmbRoles.Kitchen)]
+    [Authorize(Roles = BmbRoles.Kitchen)]
     [ProducesResponseType<KitchenQueueResponse>(StatusCodes.Status200OK)]
     [AllowAnonymous]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -45,7 +46,7 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.</returns>
     [HttpPatch]
     [Route("{orderId:guid}/status")]
-    // [Authorize(Roles = BmbRoles.Kitchen)]
+    [Authorize(Roles = BmbRoles.Kitchen)]
     [AllowAnonymous]
     public async Task<IActionResult> UpdateStatus(Guid orderId,
         [FromBody] [Required] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
@@ -68,7 +69,7 @@ public class KitchenOrdersController(IKitchenOrderService kitchenOrderService) :
     /// <returns>An <see cref="IActionResult"/> containing the next kitchen order or no content if no order exists.</returns>
     [HttpGet]
     [Route("next")]
-    // [Authorize(Roles = BmbRoles.Kitchen)]
+    [Authorize(Roles = BmbRoles.Kitchen)]
     [AllowAnonymous]
     [ProducesResponseType<NextOrderResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
