@@ -73,3 +73,7 @@ Repository with Kitchen production line resources
   - Removes the order from the `Ready` queue.
   - Removes the order from the list.
   - Publishes an `OrderStatusUpdated` event with the status value `Completed`.
+
+## This repo on the infrastructure
+
+![Architecture Diagram](aws-infra-phase-4.png)

@@ -136,7 +136,7 @@ resource "kubernetes_secret" "secret_api" {
     "JwtOptions__SigningKey" = local.jwt_signing_key
     "AWS_SECRET_ACCESS_KEY"  = local.aws_secret_access_key
     "AWS_ACCESS_KEY_ID"      = local.aws_access_key
-    "AWS_REGION"     = local.aws_region
+    "AWS_REGION"             = local.aws_region
   }
   type = "Opaque"
 }
