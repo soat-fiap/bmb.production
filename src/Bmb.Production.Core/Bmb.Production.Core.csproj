@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bmb.Domain.Core" Version="0.0.12" />
+      <PackageReference Include="Bmb.Domain.Core" Version="0.0.17" />
     </ItemGroup>
 
 </Project>
