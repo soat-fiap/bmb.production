@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Bmb.Auth;
 using Bmb.Production.Api.Exceptions;
@@ -39,10 +40,7 @@ try
     builder.Services.AddHttpLogging(_ => { });
 
     builder.Services.AddControllers()
-        .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });;
+        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
     builder.Services.IoCSetup(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -55,7 +53,7 @@ try
     builder.Services.AddSingleton(jwtOptions);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.ConfigureHealthCheck();
-    
+
     var app = builder.Build();
     app.UseHttpLogging();
 
@@ -63,7 +61,11 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version.Major;
+            options.SwaggerEndpoint($"/swagger/v{version}/swagger.yaml", $"v{version}");
+        });
     }
 
     app.UseHealthChecks("/healthz", new HealthCheckOptions
@@ -71,13 +73,13 @@ try
         Predicate = _ => true,
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
-    
+
     app.UseHttpsRedirection();
 
     app.UseCors("AllowSpecificOrigins");
-    
+
     app.UseAuthentication();
-    
+
     app.UseAuthorization();
 
     app.MapControllers();
@@ -93,4 +95,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-

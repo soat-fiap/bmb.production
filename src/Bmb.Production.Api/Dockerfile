@@ -18,7 +18,8 @@ RUN dotnet restore src/Bmb.Production.Api
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "src/Bmb.Production.Api/Bmb.Production.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ARG API_VERSION
+RUN dotnet publish "src/Bmb.Production.Api/Bmb.Production.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:Version=$API_VERSION
 
 
 FROM base AS final
