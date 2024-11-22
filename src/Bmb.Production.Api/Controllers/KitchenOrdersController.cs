@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using Bmb.Auth;
 using Bmb.Production.Api.Extensions;
 using Bmb.Production.Api.Model;
 using Bmb.Production.Application.Dtos;
 using Bmb.Production.Controllers.Contracts;
+using Bmb.Tools.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

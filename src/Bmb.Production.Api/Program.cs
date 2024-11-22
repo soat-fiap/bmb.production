@@ -1,9 +1,8 @@
-using System.Reflection;
 using System.Text.Json.Serialization;
-using Bmb.Auth;
 using Bmb.Production.Api.Exceptions;
-using Bmb.Production.Api.Extensions;
 using Bmb.Production.DI;
+using Bmb.Tools.Auth;
+using Bmb.Tools.OpenApi;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -44,7 +43,7 @@ try
     builder.Services.IoCSetup(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
-    builder.Services.SetupSwagger();
+    builder.Services.ConfigBmbSwaggerGen();
 
 
     var jwtOptions = builder.Configuration
@@ -61,11 +60,7 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI(options =>
-        {
-            var version = Assembly.GetExecutingAssembly().GetName().Version.Major;
-            options.SwaggerEndpoint($"/swagger/v{version}/swagger.yaml", $"v{version}");
-        });
+        app.UseBmbSwaggerUi();
     }
 
     app.UseHealthChecks("/healthz", new HealthCheckOptions
