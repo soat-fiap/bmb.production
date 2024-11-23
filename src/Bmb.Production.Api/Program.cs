@@ -41,7 +41,6 @@ try
 
     builder.Services.AddControllers()
         .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
-        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
     builder.Services.IoCSetup(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
