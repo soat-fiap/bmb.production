@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Bmb.Production.Api.Exceptions;
 using Bmb.Production.DI;
@@ -40,6 +41,7 @@ try
 
     builder.Services.AddControllers()
         .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
     builder.Services.IoCSetup(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -52,6 +54,7 @@ try
     builder.Services.AddSingleton(jwtOptions);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.ConfigureHealthCheck();
+
 
     var app = builder.Build();
     app.UseHttpLogging();
@@ -69,11 +72,14 @@ try
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 
+
     app.UseHttpsRedirection();
 
     app.UseCors("AllowSpecificOrigins");
 
+
     app.UseAuthentication();
+
 
     app.UseAuthorization();
 
