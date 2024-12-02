@@ -1,8 +1,15 @@
 # bmb.production
-Repository with Kitchen production line resources
+This project, bmb.production, is the production/kds microservice for a fast food application. It provides a simple API that allows users to see which orders need to be prepared and update its statuses and they move through the manufacturing pipeline. Additionally, it integrates with other domain microservices through messaging using MassTransit.
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=soat-fiap_bmb.production&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=soat-fiap_bmb.production)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=soat-fiap_bmb.production&metric=coverage)](https://sonarcloud.io/summary/new_code?id=soat-fiap_bmb.production)
+
+
+### Database
+The terraform modules create a redis instance as part of the infrastructure. The decision to go with redis is based on the usage of this particular microservice. It will have a higher load of requests and the responses needs to be the closest to realtime, so users can see their orders status updates.
+
+### Masstransit
+It uses Masstransit to manage communication between services. Masstransit automatically creates Topics, Queues and Subscriptions.
 
 ## Event Subscriptions
 
